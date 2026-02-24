@@ -1,12 +1,11 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, TrendingUp, Zap, Target, Brain, BarChart3 } from 'lucide-react';
+import { ChevronDown, BarChart3 } from 'lucide-react';
 import { useGoalData } from '@/hooks/useGoalData';
 import ProgressRing from '@/components/ProgressRing';
 import MomentumSlider from '@/components/MomentumSlider';
 import ActionToggle from '@/components/ActionToggle';
 import SaveButton from '@/components/SaveButton';
-import InsightCard from '@/components/InsightCard';
 import MomentumChart from '@/components/MomentumChart';
 
 export default function Index() {
@@ -18,41 +17,20 @@ export default function Index() {
   const [showInsights, setShowInsights] = useState(false);
   const [glowCard, setGlowCard] = useState(false);
 
+  const hasData = last7Days.length > 0;
+
   const handleSave = () => {
     save();
     setGlowCard(true);
     setTimeout(() => setGlowCard(false), 1200);
   };
 
-  const insights = [
-    {
-      icon: '🚀',
-      message: multiplier > 1
-        ? `Taking action increases your momentum by ${multiplier.toFixed(1)}x.`
-        : 'Start logging actions to unlock momentum insights.',
-    },
-    {
-      icon: '📊',
-      message: `Your 7-day average momentum is ${avg7Day}/10. ${avg7Day >= 7 ? 'Excellent pace!' : avg7Day >= 5 ? 'Good momentum, keep pushing.' : 'Room to grow — stay consistent.'}`,
-    },
-    {
-      icon: '🎯',
-      message: `You took action on ${actionDays} of the last 7 days. ${actionDays >= 5 ? 'Outstanding consistency!' : 'Try to aim for 5+ action days.'}`,
-    },
-    {
-      icon: '💡',
-      message: todayEntry.blocker
-        ? `Current blocker: "${todayEntry.blocker}". Break it into smaller steps.`
-        : 'No blockers today — great mental clarity!',
-    },
-  ];
-
   return (
-    <div className="min-h-screen py-8 px-4 md:px-8">
-      <div className="max-w-4xl mx-auto space-y-8">
+    <div className="min-h-screen py-10 px-4 md:px-8">
+      <div className="max-w-4xl mx-auto space-y-10">
         {/* Header */}
         <motion.div
-          className="text-center space-y-2"
+          className="text-center space-y-1.5"
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
@@ -72,19 +50,19 @@ export default function Index() {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5, delay: 0.1 }}
         >
-          <ProgressRing value={avg7Day} label="7-Day Momentum" />
+          <ProgressRing value={avg7Day} label="7-Day Momentum Index" hasData={hasData} />
         </motion.div>
 
         {/* Main Form */}
         <motion.div
-          className={`glass-card p-6 md:p-8 transition-all duration-300 ${glowCard ? 'glass-card-glow' : ''}`}
+          className={`glass-card p-7 md:p-10 transition-all duration-300 ${glowCard ? 'glass-card-glow' : ''}`}
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.2 }}
         >
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-14">
             {/* Left: Sliders */}
-            <div className="space-y-6">
+            <div className="space-y-7">
               <MomentumSlider
                 label="Momentum"
                 icon="🔥"
@@ -112,7 +90,7 @@ export default function Index() {
             </div>
 
             {/* Right: Action & Blocker */}
-            <div className="space-y-6">
+            <div className="space-y-7">
               <ActionToggle
                 label="Took Action Today"
                 value={todayEntry.tookAction}
@@ -122,7 +100,7 @@ export default function Index() {
               <AnimatePresence>
                 {todayEntry.tookAction && (
                   <motion.div
-                    className="space-y-5"
+                    className="space-y-6"
                     initial={{ opacity: 0, y: 10, height: 0 }}
                     animate={{ opacity: 1, y: 0, height: 'auto' }}
                     exit={{ opacity: 0, y: 10, height: 0 }}
@@ -137,7 +115,7 @@ export default function Index() {
                     <div className="space-y-2">
                       <label className="text-sm font-medium text-foreground">Action Note</label>
                       <textarea
-                        className="w-full rounded-lg border border-input bg-card p-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/30 resize-none transition-shadow duration-200"
+                        className="w-full rounded-xl border border-input bg-card p-3.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/30 resize-none transition-shadow duration-200"
                         rows={2}
                         placeholder="What did you do today?"
                         value={todayEntry.actionNote}
@@ -153,7 +131,7 @@ export default function Index() {
                   🚧 Current Blocker
                 </label>
                 <textarea
-                  className="w-full rounded-lg border border-input bg-card p-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/30 resize-none transition-shadow duration-200"
+                  className="w-full rounded-xl border border-input bg-card p-3.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/30 resize-none transition-shadow duration-200"
                   rows={2}
                   placeholder="Anything holding you back?"
                   value={todayEntry.blocker}
@@ -169,14 +147,14 @@ export default function Index() {
         {/* Insights Toggle */}
         <motion.button
           type="button"
-          className="glass-card w-full p-4 flex items-center justify-between cursor-pointer group"
+          className="glass-card w-full p-5 flex items-center justify-between cursor-pointer"
           onClick={() => setShowInsights(!showInsights)}
           whileHover={{ boxShadow: 'var(--shadow-card-hover)' }}
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.35 }}
         >
-          <span className="flex items-center gap-2 text-sm font-semibold text-foreground">
+          <span className="flex items-center gap-2.5 text-sm font-semibold text-foreground">
             <BarChart3 className="w-4 h-4 text-primary" />
             View Goal Insights
           </span>
@@ -192,34 +170,46 @@ export default function Index() {
         <AnimatePresence>
           {showInsights && (
             <motion.div
-              className="space-y-6 overflow-hidden"
+              className="space-y-0 overflow-hidden"
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.35, ease: 'easeOut' }}
             >
-              {/* Chart */}
-              <div className="glass-card p-5">
-                <h3 className="text-sm font-semibold text-foreground mb-4">7-Day Trend</h3>
+              <div className="glass-card p-6">
+                <h3 className="text-sm font-semibold text-foreground mb-5">7-Day Trend</h3>
                 <MomentumChart data={last7Days} />
-                <div className="flex gap-4 mt-3 text-xs text-muted-foreground">
-                  <span className="flex items-center gap-1">
+                <div className="flex gap-5 mt-4 text-xs text-muted-foreground">
+                  <span className="flex items-center gap-1.5">
                     <span className="w-3 h-0.5 rounded bg-primary inline-block" /> Momentum
                   </span>
-                  <span className="flex items-center gap-1">
+                  <span className="flex items-center gap-1.5">
                     <span className="w-3 h-0.5 rounded inline-block" style={{ background: 'hsl(213, 94%, 68%)' }} /> Energy
                   </span>
-                  <span className="flex items-center gap-1">
+                  <span className="flex items-center gap-1.5">
                     <span className="w-3 h-0.5 rounded inline-block" style={{ background: 'hsl(280, 67%, 65%)' }} /> Focus
                   </span>
                 </div>
-              </div>
 
-              {/* Insight Cards */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {insights.map((insight, i) => (
-                  <InsightCard key={i} icon={insight.icon} message={insight.message} index={i} />
-                ))}
+                {/* Minimal dynamic insights */}
+                {hasData && (
+                  <motion.div
+                    className="mt-6 pt-5 border-t border-border space-y-2.5"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.3 }}
+                  >
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      <span className="font-medium text-foreground">Action consistency:</span>{' '}
+                      {actionDays}/7 days with action taken.
+                    </p>
+                    {multiplier > 1 && (
+                      <p className="text-sm text-muted-foreground leading-relaxed">
+                        Momentum increases <span className="font-semibold text-primary">{multiplier.toFixed(1)}x</span> on days you take action.
+                      </p>
+                    )}
+                  </motion.div>
+                )}
               </div>
             </motion.div>
           )}
