@@ -50,7 +50,7 @@ export default function Index() {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5, delay: 0.1 }}
         >
-          <ProgressRing value={avg7Day} label="7-Day Momentum Index" hasData={hasData} />
+          <ProgressRing value={avg7Day} label="7-Day Performance Index" hasData={hasData} />
         </motion.div>
 
         {/* Main Form */}
@@ -179,7 +179,7 @@ export default function Index() {
               <div className="glass-card p-6">
                 <h3 className="text-sm font-semibold text-foreground mb-5">7-Day Trend</h3>
                 <MomentumChart data={last7Days} />
-                <div className="flex gap-5 mt-4 text-xs text-muted-foreground">
+                <div className="flex flex-wrap gap-x-6 gap-y-2 mt-4 text-xs text-muted-foreground">
                   <span className="flex items-center gap-1.5">
                     <span className="w-3 h-0.5 rounded bg-primary inline-block" /> Momentum
                   </span>
@@ -188,6 +188,9 @@ export default function Index() {
                   </span>
                   <span className="flex items-center gap-1.5">
                     <span className="w-3 h-0.5 rounded inline-block" style={{ background: 'hsl(280, 67%, 65%)' }} /> Focus
+                  </span>
+                  <span className="flex items-center gap-1.5">
+                    <span className="w-3 h-0.5 rounded inline-block" style={{ background: 'hsl(35, 92%, 60%)' }} /> Clarity
                   </span>
                 </div>
 
