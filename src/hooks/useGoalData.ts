@@ -73,7 +73,7 @@ export function useGoalData() {
     .sort((a, b) => a.date.localeCompare(b.date));
 
   const avg7Day = last7Days.length > 0
-    ? Math.round((last7Days.reduce((s, e) => s + e.momentum, 0) / last7Days.length) * 10) / 10
+    ? Math.round((last7Days.reduce((s, e) => s + (e.momentum + e.energy + e.focus + e.clarity) / 4, 0) / last7Days.length) * 10) / 10
     : 0;
 
   const actionDays = last7Days.filter(e => e.tookAction).length;
