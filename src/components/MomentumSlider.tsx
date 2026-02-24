@@ -58,7 +58,7 @@ export default function MomentumSlider({ label, value, onChange, min = 1, max = 
       </div>
       <div
         ref={trackRef}
-        className="slider-track relative cursor-pointer select-none touch-none"
+        className="slider-track relative cursor-pointer select-none touch-none h-[10px]"
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}

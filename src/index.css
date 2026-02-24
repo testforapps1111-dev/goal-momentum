@@ -115,11 +115,11 @@
   }
 
   .slider-thumb {
-    width: 24px;
-    height: 24px;
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
     background: white;
-    box-shadow: 0 2px 8px hsla(160, 84%, 39%, 0.3);
+    box-shadow: 0 2px 10px hsla(160, 84%, 39%, 0.25);
     border: 3px solid hsl(var(--primary));
     cursor: grab;
     transition: transform 0.15s ease, box-shadow 0.15s ease;
@@ -128,7 +128,7 @@
   .slider-thumb:active {
     cursor: grabbing;
     transform: scale(1.15);
-    box-shadow: 0 2px 16px hsla(160, 84%, 39%, 0.4);
+    box-shadow: 0 2px 18px hsla(160, 84%, 39%, 0.4);
   }
 
   .toggle-track {
