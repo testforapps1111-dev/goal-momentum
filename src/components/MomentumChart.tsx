@@ -1,4 +1,4 @@
-import { AreaChart, Area, Line, XAxis, YAxis, ResponsiveContainer, Tooltip } from 'recharts';
+import { AreaChart, Area, XAxis, YAxis, ResponsiveContainer, Tooltip } from 'recharts';
 import { motion } from 'framer-motion';
 import type { DayEntry } from '@/hooks/useGoalData';
 
@@ -63,34 +63,45 @@ export default function MomentumChart({ data }: MomentumChartProps) {
           <Area
             type="monotone"
             dataKey="momentum"
+            name="Momentum"
             stroke="hsl(160, 84%, 39%)"
             strokeWidth={2.5}
             fill="url(#momentumGrad)"
             dot={{ r: 3, fill: 'hsl(160, 84%, 39%)' }}
+            activeDot={{ r: 5 }}
             animationDuration={1000}
           />
-          <Line
+          <Area
             type="monotone"
             dataKey="energy"
+            name="Energy"
             stroke="hsl(213, 94%, 68%)"
             strokeWidth={2}
+            fill="none"
             dot={{ r: 3, fill: 'hsl(213, 94%, 68%)' }}
+            activeDot={{ r: 5 }}
             animationDuration={1200}
           />
-          <Line
+          <Area
             type="monotone"
             dataKey="focus"
+            name="Focus"
             stroke="hsl(280, 67%, 65%)"
             strokeWidth={2}
+            fill="none"
             dot={{ r: 3, fill: 'hsl(280, 67%, 65%)' }}
+            activeDot={{ r: 5 }}
             animationDuration={1400}
           />
-          <Line
+          <Area
             type="monotone"
             dataKey="clarity"
+            name="Clarity"
             stroke="hsl(35, 92%, 60%)"
             strokeWidth={2}
+            fill="none"
             dot={{ r: 3, fill: 'hsl(35, 92%, 60%)' }}
+            activeDot={{ r: 5 }}
             animationDuration={1600}
           />
         </AreaChart>

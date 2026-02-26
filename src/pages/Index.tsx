@@ -92,7 +92,7 @@ export default function Index() {
             {/* Right: Action & Blocker */}
             <div className="space-y-8">
               <ActionToggle
-                label="Took a meaningful step today?"
+                label="Took a meaningful step today towards your goal?"
                 value={todayEntry.tookAction}
                 onChange={v => updateToday({ tookAction: v })}
               />
