@@ -42,7 +42,7 @@ export default function MomentumSlider({ label, value, onChange, min = 1, max = 
   }, []);
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-3.5">
       <div className="flex items-center justify-between">
         <span className="text-sm font-medium text-foreground">
           {icon && <span className="mr-1.5">{icon}</span>}

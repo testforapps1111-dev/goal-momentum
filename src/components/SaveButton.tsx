@@ -4,9 +4,10 @@ import { Check } from 'lucide-react';
 
 interface SaveButtonProps {
   onSave: () => void;
+  hasSaved?: boolean;
 }
 
-export default function SaveButton({ onSave }: SaveButtonProps) {
+export default function SaveButton({ onSave, hasSaved = false }: SaveButtonProps) {
   const [saved, setSaved] = useState(false);
 
   const handleClick = useCallback(() => {
@@ -15,11 +16,13 @@ export default function SaveButton({ onSave }: SaveButtonProps) {
     setTimeout(() => setSaved(false), 2000);
   }, [onSave]);
 
+  const label = hasSaved ? 'Update Today\'s Entry' : 'Save Today\'s Entry';
+
   return (
     <motion.button
       type="button"
       onClick={handleClick}
-      className="save-ripple w-full py-3.5 px-6 rounded-lg font-semibold text-primary-foreground gradient-primary transition-shadow duration-200 flex items-center justify-center gap-2"
+      className="save-ripple w-full py-4 px-6 rounded-xl font-semibold text-primary-foreground gradient-primary transition-shadow duration-200 flex items-center justify-center gap-2 text-[15px]"
       whileHover={{ scale: 1.02, boxShadow: 'var(--shadow-glow)' }}
       whileTap={{ scale: 0.98 }}
     >
@@ -44,7 +47,7 @@ export default function SaveButton({ onSave }: SaveButtonProps) {
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.2 }}
           >
-            Save Today's Entry
+            {label}
           </motion.span>
         )}
       </AnimatePresence>
