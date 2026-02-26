@@ -4,9 +4,10 @@ interface ProgressRingProps {
   value: number;
   label: string;
   hasData: boolean;
+  noDataText?: string;
 }
 
-export default function ProgressRing({ value, label, hasData }: ProgressRingProps) {
+export default function ProgressRing({ value, label, hasData, noDataText }: ProgressRingProps) {
   const radius = 50;
   const circumference = 2 * Math.PI * radius;
   const progress = value / 10;
@@ -70,7 +71,7 @@ export default function ProgressRing({ value, label, hasData }: ProgressRingProp
             </>
           ) : (
             <span className="text-xs text-muted-foreground text-center px-4 leading-relaxed">
-              Not enough data yet
+              {noDataText || 'Not enough data yet'}
             </span>
           )}
         </div>
