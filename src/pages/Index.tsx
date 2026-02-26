@@ -55,14 +55,14 @@ export default function Index() {
 
         {/* Main Form */}
         <motion.div
-          className={`glass-card p-7 md:p-10 transition-all duration-300 ${glowCard ? 'glass-card-glow' : ''}`}
+          className={`glass-card p-8 md:p-12 transition-all duration-300 ${glowCard ? 'glass-card-glow' : ''}`}
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.2 }}
         >
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-14">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16">
             {/* Left: Sliders */}
-            <div className="space-y-7">
+            <div className="space-y-8">
               <MomentumSlider
                 label="Momentum"
                 icon="🔥"
@@ -90,9 +90,9 @@ export default function Index() {
             </div>
 
             {/* Right: Action & Blocker */}
-            <div className="space-y-7">
+            <div className="space-y-8">
               <ActionToggle
-                label="Took Action Today"
+                label="Took a meaningful step today?"
                 value={todayEntry.tookAction}
                 onChange={v => updateToday({ tookAction: v })}
               />
@@ -139,8 +139,12 @@ export default function Index() {
                 />
               </div>
 
-              <SaveButton onSave={handleSave} />
             </div>
+          </div>
+
+          {/* Centered Save Button */}
+          <div className="pt-4">
+            <SaveButton onSave={handleSave} hasSaved={last7Days.some(e => e.date === todayEntry.date)} />
           </div>
         </motion.div>
 
