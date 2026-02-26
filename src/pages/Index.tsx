@@ -2,17 +2,21 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, BarChart3 } from 'lucide-react';
 import { useGoalData } from '@/hooks/useGoalData';
+import { useTranslation } from '@/hooks/useTranslation';
 import ProgressRing from '@/components/ProgressRing';
 import MomentumSlider from '@/components/MomentumSlider';
 import ActionToggle from '@/components/ActionToggle';
 import SaveButton from '@/components/SaveButton';
 import MomentumChart from '@/components/MomentumChart';
+import LanguageSwitcher from '@/components/LanguageSwitcher';
 
 export default function Index() {
   const {
     todayEntry, updateToday, save,
     last7Days, avg7Day, actionDays, multiplier,
   } = useGoalData();
+
+  const { t } = useTranslation();
 
   const [showInsights, setShowInsights] = useState(false);
   const [glowCard, setGlowCard] = useState(false);
@@ -28,19 +32,24 @@ export default function Index() {
   return (
     <div className="min-h-screen py-10 px-4 md:px-8">
       <div className="max-w-4xl mx-auto space-y-10">
-        {/* Header */}
+        {/* Header with Language Switcher */}
         <motion.div
-          className="text-center space-y-1.5"
+          className="relative"
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
         >
-          <h1 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight">
-            Goal Momentum Tracker
-          </h1>
-          <p className="text-muted-foreground text-sm">
-            Track your daily growth signals
-          </p>
+          <div className="absolute right-0 top-0">
+            <LanguageSwitcher />
+          </div>
+          <div className="text-center space-y-1.5 pt-1">
+            <h1 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight">
+              {t('app.title')}
+            </h1>
+            <p className="text-muted-foreground text-sm">
+              {t('app.subtitle')}
+            </p>
+          </div>
         </motion.div>
 
         {/* Progress Ring */}
@@ -50,7 +59,7 @@ export default function Index() {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5, delay: 0.1 }}
         >
-          <ProgressRing value={avg7Day} label="7-Day Performance Index" hasData={hasData} />
+          <ProgressRing value={avg7Day} label={t('ring.label')} hasData={hasData} noDataText={t('ring.nodata')} />
         </motion.div>
 
         {/* Main Form */}
@@ -63,36 +72,16 @@ export default function Index() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16">
             {/* Left: Sliders */}
             <div className="space-y-8">
-              <MomentumSlider
-                label="Momentum"
-                icon="🔥"
-                value={todayEntry.momentum}
-                onChange={v => updateToday({ momentum: v })}
-              />
-              <MomentumSlider
-                label="Energy"
-                icon="⚡"
-                value={todayEntry.energy}
-                onChange={v => updateToday({ energy: v })}
-              />
-              <MomentumSlider
-                label="Focus"
-                icon="🎯"
-                value={todayEntry.focus}
-                onChange={v => updateToday({ focus: v })}
-              />
-              <MomentumSlider
-                label="Clarity"
-                icon="💎"
-                value={todayEntry.clarity}
-                onChange={v => updateToday({ clarity: v })}
-              />
+              <MomentumSlider label={t('slider.momentum')} icon="🔥" value={todayEntry.momentum} onChange={v => updateToday({ momentum: v })} />
+              <MomentumSlider label={t('slider.energy')} icon="⚡" value={todayEntry.energy} onChange={v => updateToday({ energy: v })} />
+              <MomentumSlider label={t('slider.focus')} icon="🎯" value={todayEntry.focus} onChange={v => updateToday({ focus: v })} />
+              <MomentumSlider label={t('slider.clarity')} icon="💎" value={todayEntry.clarity} onChange={v => updateToday({ clarity: v })} />
             </div>
 
             {/* Right: Action & Blocker */}
             <div className="space-y-8">
               <ActionToggle
-                label="Took a meaningful step today towards your goal?"
+                label={t('action.label')}
                 value={todayEntry.tookAction}
                 onChange={v => updateToday({ tookAction: v })}
               />
@@ -106,18 +95,13 @@ export default function Index() {
                     exit={{ opacity: 0, y: 10, height: 0 }}
                     transition={{ duration: 0.28, ease: 'easeOut' }}
                   >
-                    <MomentumSlider
-                      label="Impact Level"
-                      icon="📈"
-                      value={todayEntry.impactLevel}
-                      onChange={v => updateToday({ impactLevel: v })}
-                    />
+                    <MomentumSlider label={t('slider.impact')} icon="📈" value={todayEntry.impactLevel} onChange={v => updateToday({ impactLevel: v })} />
                     <div className="space-y-2">
-                      <label className="text-sm font-medium text-foreground">Action Note</label>
+                      <label className="text-sm font-medium text-foreground">{t('action.note.label')}</label>
                       <textarea
                         className="w-full rounded-xl border border-input bg-card p-3.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/30 resize-none transition-shadow duration-200"
                         rows={2}
-                        placeholder="What did you do today?"
+                        placeholder={t('action.note.placeholder')}
                         value={todayEntry.actionNote}
                         onChange={e => updateToday({ actionNote: e.target.value })}
                       />
@@ -127,18 +111,15 @@ export default function Index() {
               </AnimatePresence>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium text-foreground">
-                  🚧 Current Blocker
-                </label>
+                <label className="text-sm font-medium text-foreground">{t('blocker.label')}</label>
                 <textarea
                   className="w-full rounded-xl border border-input bg-card p-3.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/30 resize-none transition-shadow duration-200"
                   rows={2}
-                  placeholder="Anything holding you back?"
+                  placeholder={t('blocker.placeholder')}
                   value={todayEntry.blocker}
                   onChange={e => updateToday({ blocker: e.target.value })}
                 />
               </div>
-
             </div>
           </div>
 
@@ -160,12 +141,9 @@ export default function Index() {
         >
           <span className="flex items-center gap-2.5 text-sm font-semibold text-foreground">
             <BarChart3 className="w-4 h-4 text-primary" />
-            View Goal Insights
+            {t('insights.toggle')}
           </span>
-          <motion.div
-            animate={{ rotate: showInsights ? 180 : 0 }}
-            transition={{ duration: 0.25 }}
-          >
+          <motion.div animate={{ rotate: showInsights ? 180 : 0 }} transition={{ duration: 0.25 }}>
             <ChevronDown className="w-4 h-4 text-muted-foreground" />
           </motion.div>
         </motion.button>
@@ -181,24 +159,23 @@ export default function Index() {
               transition={{ duration: 0.35, ease: 'easeOut' }}
             >
               <div className="glass-card p-6">
-                <h3 className="text-sm font-semibold text-foreground mb-5">7-Day Trend</h3>
+                <h3 className="text-sm font-semibold text-foreground mb-5">{t('insights.trend')}</h3>
                 <MomentumChart data={last7Days} />
                 <div className="flex flex-wrap gap-x-6 gap-y-2 mt-4 text-xs text-muted-foreground">
                   <span className="flex items-center gap-1.5">
-                    <span className="w-3 h-0.5 rounded bg-primary inline-block" /> Momentum
+                    <span className="w-3 h-0.5 rounded bg-primary inline-block" /> {t('insights.momentum')}
                   </span>
                   <span className="flex items-center gap-1.5">
-                    <span className="w-3 h-0.5 rounded inline-block" style={{ background: 'hsl(213, 94%, 68%)' }} /> Energy
+                    <span className="w-3 h-0.5 rounded inline-block" style={{ background: 'hsl(213, 94%, 68%)' }} /> {t('insights.energy')}
                   </span>
                   <span className="flex items-center gap-1.5">
-                    <span className="w-3 h-0.5 rounded inline-block" style={{ background: 'hsl(280, 67%, 65%)' }} /> Focus
+                    <span className="w-3 h-0.5 rounded inline-block" style={{ background: 'hsl(280, 67%, 65%)' }} /> {t('insights.focus')}
                   </span>
                   <span className="flex items-center gap-1.5">
-                    <span className="w-3 h-0.5 rounded inline-block" style={{ background: 'hsl(35, 92%, 60%)' }} /> Clarity
+                    <span className="w-3 h-0.5 rounded inline-block" style={{ background: 'hsl(35, 92%, 60%)' }} /> {t('insights.clarity')}
                   </span>
                 </div>
 
-                {/* Minimal dynamic insights */}
                 {hasData && (
                   <motion.div
                     className="mt-6 pt-5 border-t border-border space-y-2.5"
@@ -207,12 +184,12 @@ export default function Index() {
                     transition={{ delay: 0.3 }}
                   >
                     <p className="text-sm text-muted-foreground leading-relaxed">
-                      <span className="font-medium text-foreground">Action consistency:</span>{' '}
-                      {actionDays}/7 days with action taken.
+                      <span className="font-medium text-foreground">{t('insights.consistency')}</span>{' '}
+                      {actionDays}/7 {t('insights.days')}
                     </p>
                     {multiplier > 1 && (
                       <p className="text-sm text-muted-foreground leading-relaxed">
-                        Momentum increases <span className="font-semibold text-primary">{multiplier.toFixed(1)}x</span> on days you take action.
+                        {t('insights.multiplier.pre')} <span className="font-semibold text-primary">{multiplier.toFixed(1)}x</span> {t('insights.multiplier.post')}
                       </p>
                     )}
                   </motion.div>

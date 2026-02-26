@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Check } from 'lucide-react';
+import { useTranslation } from '@/hooks/useTranslation';
 
 interface SaveButtonProps {
   onSave: () => void;
@@ -9,6 +10,7 @@ interface SaveButtonProps {
 
 export default function SaveButton({ onSave, hasSaved = false }: SaveButtonProps) {
   const [saved, setSaved] = useState(false);
+  const { t } = useTranslation();
 
   const handleClick = useCallback(() => {
     onSave();
@@ -16,7 +18,7 @@ export default function SaveButton({ onSave, hasSaved = false }: SaveButtonProps
     setTimeout(() => setSaved(false), 2000);
   }, [onSave]);
 
-  const label = hasSaved ? 'Update Today\'s Entry' : 'Save Today\'s Entry';
+  const label = hasSaved ? t('save.update') : t('save.save');
 
   return (
     <motion.button
@@ -37,7 +39,7 @@ export default function SaveButton({ onSave, hasSaved = false }: SaveButtonProps
             transition={{ duration: 0.2 }}
           >
             <Check className="w-5 h-5" />
-            Saved
+            {t('save.saved')}
           </motion.span>
         ) : (
           <motion.span
