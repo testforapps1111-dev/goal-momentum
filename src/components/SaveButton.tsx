@@ -5,10 +5,9 @@ import { useTranslation } from '@/hooks/useTranslation';
 
 interface SaveButtonProps {
   onSave: () => void;
-  hasSaved?: boolean;
 }
 
-export default function SaveButton({ onSave, hasSaved = false }: SaveButtonProps) {
+export default function SaveButton({ onSave }: SaveButtonProps) {
   const [saved, setSaved] = useState(false);
   const { t } = useTranslation();
 
@@ -18,14 +17,13 @@ export default function SaveButton({ onSave, hasSaved = false }: SaveButtonProps
     setTimeout(() => setSaved(false), 2000);
   }, [onSave]);
 
-  const label = hasSaved ? t('save.update') : t('save.save');
-
   return (
     <motion.button
       type="button"
       onClick={handleClick}
-      className="save-ripple w-full py-4 px-6 rounded-xl font-semibold text-primary-foreground gradient-primary transition-shadow duration-200 flex items-center justify-center gap-2 text-[15px]"
-      whileHover={{ scale: 1.02, boxShadow: 'var(--shadow-glow)' }}
+      disabled={saved}
+      className="save-ripple w-full py-4 px-6 rounded-xl font-semibold text-primary-foreground gradient-primary transition-shadow duration-200 flex items-center justify-center gap-2 text-[15px] disabled:opacity-80"
+      whileHover={{ scale: saved ? 1 : 1.02, boxShadow: 'var(--shadow-glow)' }}
       whileTap={{ scale: 0.98 }}
     >
       <AnimatePresence mode="wait">
@@ -49,7 +47,7 @@ export default function SaveButton({ onSave, hasSaved = false }: SaveButtonProps
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.2 }}
           >
-            {label}
+            {t('save.save')}
           </motion.span>
         )}
       </AnimatePresence>

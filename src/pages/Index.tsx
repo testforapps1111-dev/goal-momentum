@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, BarChart3 } from 'lucide-react';
+import { ChevronDown, BarChart3, History } from 'lucide-react';
 import { useGoalData } from '@/hooks/useGoalData';
 import { useTranslation } from '@/hooks/useTranslation';
 import ProgressRing from '@/components/ProgressRing';
@@ -8,31 +8,42 @@ import MomentumSlider from '@/components/MomentumSlider';
 import ActionToggle from '@/components/ActionToggle';
 import SaveButton from '@/components/SaveButton';
 import MomentumChart from '@/components/MomentumChart';
+import HistoryPanel from '@/components/HistoryPanel';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 
 export default function Index() {
   const {
     todayEntry, updateToday, save,
     last7Days, avg7Day, actionDays, multiplier,
+    entries, defaultEntry,
   } = useGoalData();
 
   const { t } = useTranslation();
 
   const [showInsights, setShowInsights] = useState(false);
+  const [showHistory, setShowHistory] = useState(false);
   const [glowCard, setGlowCard] = useState(false);
+  const [resetKey, setResetKey] = useState(0);
 
   const hasData = last7Days.length > 0;
+  const todayKey = new Date().toISOString().split('T')[0];
 
   const handleSave = () => {
     save();
     setGlowCard(true);
-    setTimeout(() => setGlowCard(false), 1200);
+    setTimeout(() => {
+      setGlowCard(false);
+      // Reset to defaults after "Entry Saved" shows
+      const defaults = defaultEntry(todayKey);
+      updateToday(defaults);
+      setResetKey(k => k + 1);
+    }, 2200);
   };
 
   return (
     <div className="min-h-screen py-10 px-4 md:px-8">
-      <div className="max-w-4xl mx-auto space-y-10">
-        {/* Header with Language Switcher */}
+      <div className="max-w-4xl mx-auto space-y-12">
+        {/* Header */}
         <motion.div
           className="relative"
           initial={{ opacity: 0, y: -10 }}
@@ -42,11 +53,11 @@ export default function Index() {
           <div className="absolute right-0 top-0">
             <LanguageSwitcher />
           </div>
-          <div className="text-center space-y-1.5 pt-1">
+          <div className="text-center space-y-2 pt-1">
             <h1 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight">
               {t('app.title')}
             </h1>
-            <p className="text-muted-foreground text-sm">
+            <p className="text-muted-foreground text-sm max-w-md mx-auto">
               {t('app.subtitle')}
             </p>
           </div>
@@ -64,6 +75,7 @@ export default function Index() {
 
         {/* Main Form */}
         <motion.div
+          key={resetKey}
           className={`glass-card p-8 md:p-12 transition-all duration-300 ${glowCard ? 'glass-card-glow' : ''}`}
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
@@ -71,15 +83,15 @@ export default function Index() {
         >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16">
             {/* Left: Sliders */}
-            <div className="space-y-8">
-              <MomentumSlider label={t('slider.momentum')} icon="🔥" value={todayEntry.momentum} onChange={v => updateToday({ momentum: v })} />
+            <div className="space-y-10">
+              <MomentumSlider label={t('slider.drive')} icon="🔥" value={todayEntry.drive} onChange={v => updateToday({ drive: v })} />
               <MomentumSlider label={t('slider.energy')} icon="⚡" value={todayEntry.energy} onChange={v => updateToday({ energy: v })} />
               <MomentumSlider label={t('slider.focus')} icon="🎯" value={todayEntry.focus} onChange={v => updateToday({ focus: v })} />
               <MomentumSlider label={t('slider.clarity')} icon="💎" value={todayEntry.clarity} onChange={v => updateToday({ clarity: v })} />
             </div>
 
             {/* Right: Action & Blocker */}
-            <div className="space-y-8">
+            <div className="space-y-10">
               <ActionToggle
                 label={t('action.label')}
                 value={todayEntry.tookAction}
@@ -89,7 +101,7 @@ export default function Index() {
               <AnimatePresence>
                 {todayEntry.tookAction && (
                   <motion.div
-                    className="space-y-6"
+                    className="space-y-8"
                     initial={{ opacity: 0, y: 10, height: 0 }}
                     animate={{ opacity: 1, y: 0, height: 'auto' }}
                     exit={{ opacity: 0, y: 10, height: 0 }}
@@ -123,16 +135,16 @@ export default function Index() {
             </div>
           </div>
 
-          {/* Centered Save Button */}
-          <div className="pt-4">
-            <SaveButton onSave={handleSave} hasSaved={last7Days.some(e => e.date === todayEntry.date)} />
+          {/* Save Button */}
+          <div className="pt-6">
+            <SaveButton onSave={handleSave} />
           </div>
         </motion.div>
 
         {/* Insights Toggle */}
         <motion.button
           type="button"
-          className="glass-card w-full p-5 flex items-center justify-between cursor-pointer"
+          className="glass-card w-full p-6 flex items-center justify-between cursor-pointer"
           onClick={() => setShowInsights(!showInsights)}
           whileHover={{ boxShadow: 'var(--shadow-card-hover)' }}
           initial={{ opacity: 0, y: 16 }}
@@ -158,12 +170,12 @@ export default function Index() {
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.35, ease: 'easeOut' }}
             >
-              <div className="glass-card p-6">
-                <h3 className="text-sm font-semibold text-foreground mb-5">{t('insights.trend')}</h3>
+              <div className="glass-card p-8">
+                <h3 className="text-sm font-semibold text-foreground mb-6">{t('insights.trend')}</h3>
                 <MomentumChart data={last7Days} />
-                <div className="flex flex-wrap gap-x-6 gap-y-2 mt-4 text-xs text-muted-foreground">
+                <div className="flex flex-wrap gap-x-6 gap-y-2 mt-5 text-xs text-muted-foreground">
                   <span className="flex items-center gap-1.5">
-                    <span className="w-3 h-0.5 rounded bg-primary inline-block" /> {t('insights.momentum')}
+                    <span className="w-3 h-0.5 rounded bg-primary inline-block" /> {t('insights.drive')}
                   </span>
                   <span className="flex items-center gap-1.5">
                     <span className="w-3 h-0.5 rounded inline-block" style={{ background: 'hsl(213, 94%, 68%)' }} /> {t('insights.energy')}
@@ -178,7 +190,7 @@ export default function Index() {
 
                 {hasData && (
                   <motion.div
-                    className="mt-6 pt-5 border-t border-border space-y-2.5"
+                    className="mt-8 pt-6 border-t border-border space-y-3"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.3 }}
@@ -194,6 +206,43 @@ export default function Index() {
                     )}
                   </motion.div>
                 )}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* History Toggle */}
+        <motion.button
+          type="button"
+          className="glass-card w-full p-6 flex items-center justify-between cursor-pointer"
+          onClick={() => setShowHistory(!showHistory)}
+          whileHover={{ boxShadow: 'var(--shadow-card-hover)' }}
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.4 }}
+        >
+          <span className="flex items-center gap-2.5 text-sm font-semibold text-foreground">
+            <History className="w-4 h-4 text-primary" />
+            {t('history.toggle')}
+          </span>
+          <motion.div animate={{ rotate: showHistory ? 180 : 0 }} transition={{ duration: 0.25 }}>
+            <ChevronDown className="w-4 h-4 text-muted-foreground" />
+          </motion.div>
+        </motion.button>
+
+        {/* History Panel */}
+        <AnimatePresence>
+          {showHistory && (
+            <motion.div
+              className="overflow-hidden"
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.35, ease: 'easeOut' }}
+            >
+              <div className="glass-card p-8">
+                <h3 className="text-sm font-semibold text-foreground mb-6">{t('history.title')}</h3>
+                <HistoryPanel entries={entries} />
               </div>
             </motion.div>
           )}

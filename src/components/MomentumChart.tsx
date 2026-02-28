@@ -7,9 +7,20 @@ interface MomentumChartProps {
 }
 
 export default function MomentumChart({ data }: MomentumChartProps) {
-  const chartData = data.map(e => ({
-    date: new Date(e.date).toLocaleDateString('en-US', { weekday: 'short' }),
-    momentum: e.momentum,
+  // Build a full 7-day array
+  const today = new Date();
+  const days: typeof data[number][] = [];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(today);
+    d.setDate(d.getDate() - i);
+    const key = d.toISOString().split('T')[0];
+    const entry = data.find(e => e.date === key);
+    days.push(entry || { date: key, drive: 0, energy: 0, focus: 0, clarity: 0, tookAction: false, impactLevel: 0, actionNote: '', blocker: '' });
+  }
+
+  const chartData = days.map(e => ({
+    date: new Date(e.date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }),
+    drive: e.drive,
     energy: e.energy,
     focus: e.focus,
     clarity: e.clarity,
@@ -62,8 +73,8 @@ export default function MomentumChart({ data }: MomentumChartProps) {
           />
           <Area
             type="monotone"
-            dataKey="momentum"
-            name="Momentum"
+            dataKey="drive"
+            name="Drive"
             stroke="hsl(160, 84%, 39%)"
             strokeWidth={2.5}
             fill="url(#momentumGrad)"

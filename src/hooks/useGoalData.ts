@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 
 export interface DayEntry {
   date: string;
-  momentum: number;
+  drive: number;
   energy: number;
   focus: number;
   clarity: number;
@@ -33,7 +33,7 @@ function saveEntries(entries: DayEntry[]) {
 
 const defaultEntry = (date: string): DayEntry => ({
   date,
-  momentum: 5,
+  drive: 5,
   energy: 5,
   focus: 5,
   clarity: 5,
@@ -73,21 +73,21 @@ export function useGoalData() {
     .sort((a, b) => a.date.localeCompare(b.date));
 
   const avg7Day = last7Days.length > 0
-    ? Math.round((last7Days.reduce((s, e) => s + (e.momentum + e.energy + e.focus + e.clarity) / 4, 0) / last7Days.length) * 10) / 10
+    ? Math.round((last7Days.reduce((s, e) => s + (e.drive + e.energy + e.focus + e.clarity) / 4, 0) / last7Days.length) * 10) / 10
     : 0;
 
   const actionDays = last7Days.filter(e => e.tookAction).length;
   const avgWithAction = last7Days.filter(e => e.tookAction);
   const avgWithoutAction = last7Days.filter(e => !e.tookAction);
 
-  const actionMomentum = avgWithAction.length > 0
-    ? avgWithAction.reduce((s, e) => s + e.momentum, 0) / avgWithAction.length
+  const actionAvg = avgWithAction.length > 0
+    ? avgWithAction.reduce((s, e) => s + (e.drive + e.energy + e.focus + e.clarity) / 4, 0) / avgWithAction.length
     : 0;
-  const noActionMomentum = avgWithoutAction.length > 0
-    ? avgWithoutAction.reduce((s, e) => s + e.momentum, 0) / avgWithoutAction.length
+  const noActionAvg = avgWithoutAction.length > 0
+    ? avgWithoutAction.reduce((s, e) => s + (e.drive + e.energy + e.focus + e.clarity) / 4, 0) / avgWithoutAction.length
     : 0;
 
-  const multiplier = noActionMomentum > 0 ? (actionMomentum / noActionMomentum) : 0;
+  const multiplier = noActionAvg > 0 ? (actionAvg / noActionAvg) : 0;
 
   return {
     todayEntry,
@@ -97,8 +97,9 @@ export function useGoalData() {
     last7Days,
     avg7Day,
     actionDays,
-    actionMomentum,
-    noActionMomentum,
+    actionAvg,
+    noActionAvg,
+    defaultEntry,
     multiplier,
   };
 }
