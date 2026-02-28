@@ -117,7 +117,7 @@ export const LANGUAGES = [
 // All translatable UI strings
 const EN_STRINGS: Record<string, string> = {
   'app.title': 'Goal Momentum Tracker',
-  'app.subtitle': 'Track your daily growth signals',
+  'app.subtitle': 'Set your goals, track your daily growth signals, and build unstoppable momentum.',
   'ring.label': '7-Day Performance Index',
   'ring.nodata': 'Not enough data yet',
   'slider.drive': 'Drive',
@@ -132,7 +132,7 @@ const EN_STRINGS: Record<string, string> = {
   'blocker.placeholder': 'Anything holding you back?',
   'save.save': 'Save Entry',
   'save.saved': 'Entry Saved ✓',
-  'insights.toggle': 'View Goal Insights',
+  'insights.toggle': 'Goal Insights',
   'insights.trend': '7-Day Trend',
   'insights.drive': 'Drive',
   'insights.energy': 'Energy',
@@ -148,6 +148,12 @@ const EN_STRINGS: Record<string, string> = {
   'history.action.yes': 'Action taken',
   'history.action.no': 'No action',
   'history.blocker': 'Blocker',
+  'goal.ask': "What's your goal?",
+  'goal.ask.sub': 'Define a goal you want to track — personal, professional, or anything that matters to you.',
+  'goal.placeholder': 'e.g. Improve communication skills, Win an award...',
+  'goal.add': 'Add Goal',
+  'goal.recent': 'Your Goals',
+  'goal.back': 'All Goals',
 };
 
 interface TranslationContextValue {

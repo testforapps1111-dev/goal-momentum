@@ -12,26 +12,47 @@ export interface DayEntry {
   blocker: string;
 }
 
-const STORAGE_KEY = 'goal-momentum-tracker';
+export interface Goal {
+  id: string;
+  name: string;
+  createdAt: string;
+}
+
+interface GoalStore {
+  goals: Goal[];
+  entries: Record<string, DayEntry[]>; // goalId -> entries
+}
+
+const STORAGE_KEY = 'goal-momentum-tracker-v2';
 
 function getTodayKey() {
   return new Date().toISOString().split('T')[0];
 }
 
-function loadEntries(): DayEntry[] {
+function loadStore(): GoalStore {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? JSON.parse(raw) : [];
+    if (raw) return JSON.parse(raw);
+    // Migrate from old format
+    const oldRaw = localStorage.getItem('goal-momentum-tracker');
+    if (oldRaw) {
+      const oldEntries = JSON.parse(oldRaw) as DayEntry[];
+      if (Array.isArray(oldEntries) && oldEntries.length > 0) {
+        const defaultGoal: Goal = { id: 'default', name: 'My Goal', createdAt: new Date().toISOString() };
+        return { goals: [defaultGoal], entries: { default: oldEntries } };
+      }
+    }
+    return { goals: [], entries: {} };
   } catch {
-    return [];
+    return { goals: [], entries: {} };
   }
 }
 
-function saveEntries(entries: DayEntry[]) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+function saveStore(store: GoalStore) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(store));
 }
 
-const defaultEntry = (date: string): DayEntry => ({
+export const defaultEntry = (date: string): DayEntry => ({
   date,
   drive: 5,
   energy: 5,
@@ -43,25 +64,62 @@ const defaultEntry = (date: string): DayEntry => ({
   blocker: '',
 });
 
-export function useGoalData() {
-  const [entries, setEntries] = useState<DayEntry[]>(loadEntries);
+export function useGoalStore() {
+  const [store, setStore] = useState<GoalStore>(loadStore);
+
+  useEffect(() => {
+    saveStore(store);
+  }, [store]);
+
+  const addGoal = useCallback((name: string) => {
+    const goal: Goal = {
+      id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+      name,
+      createdAt: new Date().toISOString(),
+    };
+    setStore(prev => ({
+      ...prev,
+      goals: [goal, ...prev.goals],
+      entries: { ...prev.entries, [goal.id]: [] },
+    }));
+    return goal;
+  }, []);
+
+  const deleteGoal = useCallback((goalId: string) => {
+    setStore(prev => {
+      const { [goalId]: _, ...rest } = prev.entries;
+      return {
+        goals: prev.goals.filter(g => g.id !== goalId),
+        entries: rest,
+      };
+    });
+  }, []);
+
+  return { store, setStore, addGoal, deleteGoal };
+}
+
+export function useGoalData(goalId: string, store: GoalStore, setStore: React.Dispatch<React.SetStateAction<GoalStore>>) {
   const todayKey = getTodayKey();
+  const entries = store.entries[goalId] || [];
 
   const todayEntry = entries.find(e => e.date === todayKey) || defaultEntry(todayKey);
 
   const updateToday = useCallback((updates: Partial<DayEntry>) => {
-    setEntries(prev => {
-      const idx = prev.findIndex(e => e.date === todayKey);
-      const current = idx >= 0 ? prev[idx] : defaultEntry(todayKey);
+    setStore(prev => {
+      const goalEntries = prev.entries[goalId] || [];
+      const idx = goalEntries.findIndex(e => e.date === todayKey);
+      const current = idx >= 0 ? goalEntries[idx] : defaultEntry(todayKey);
       const updated = { ...current, ...updates };
-      const next = idx >= 0 ? [...prev.slice(0, idx), updated, ...prev.slice(idx + 1)] : [...prev, updated];
-      return next;
+      const next = idx >= 0
+        ? [...goalEntries.slice(0, idx), updated, ...goalEntries.slice(idx + 1)]
+        : [...goalEntries, updated];
+      return { ...prev, entries: { ...prev.entries, [goalId]: next } };
     });
-  }, [todayKey]);
+  }, [goalId, todayKey, setStore]);
 
   const save = useCallback(() => {
-    saveEntries(entries);
-  }, [entries]);
+    saveStore(store);
+  }, [store]);
 
   const last7Days = entries
     .filter(e => {
@@ -97,9 +155,6 @@ export function useGoalData() {
     last7Days,
     avg7Day,
     actionDays,
-    actionAvg,
-    noActionAvg,
-    defaultEntry,
     multiplier,
   };
 }
