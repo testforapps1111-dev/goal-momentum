@@ -86,11 +86,11 @@ export default function MomentumSlider({ label, value, onChange, min = 0, max = 
         </div>
         {/* Value badge */}
         <motion.div
-          className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0"
+          className="w-11 h-11 rounded-xl gradient-primary flex items-center justify-center flex-shrink-0 shadow-md"
           animate={{ scale: dragging ? 1.1 : 1 }}
           transition={{ type: 'spring', stiffness: 400, damping: 20 }}
         >
-          <span className="text-sm font-bold text-primary tabular-nums">{value}</span>
+          <span className="text-sm font-bold text-primary-foreground tabular-nums">{value}</span>
         </motion.div>
       </div>
       <div className="flex justify-between text-[10px] text-muted-foreground px-0.5">

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, BarChart3, History, ArrowLeft } from 'lucide-react';
+import { ChevronDown, BarChart3, History, ArrowLeft, Crosshair } from 'lucide-react';
 import { useGoalStore, useGoalData, defaultEntry } from '@/hooks/useGoalData';
 import type { Goal } from '@/hooks/useGoalData';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -31,7 +31,10 @@ export default function Index() {
             <LanguageSwitcher />
           </div>
           <div className="text-center space-y-1.5">
-            <h1 className="text-xl md:text-2xl font-bold text-foreground tracking-tight">
+            <h1 className="text-xl md:text-2xl font-bold text-foreground tracking-tight flex items-center justify-center gap-2.5">
+              <span className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center">
+                <Crosshair className="w-5 h-5 text-primary" />
+              </span>
               {selectedGoal ? selectedGoal.name : <TranslatedTitle />}
             </h1>
             {!selectedGoal && (
@@ -368,11 +371,12 @@ function SliderField({ label, description, icon, value, onChange }: {
 }) {
   return (
     <div className="space-y-3">
-      <div>
-        <h3 className="text-sm font-semibold text-foreground flex items-center gap-1.5">
-          <span>{icon}</span> {label}
-        </h3>
-        <p className="text-xs text-muted-foreground mt-0.5">{description}</p>
+      <div className="flex items-start gap-3">
+        <span className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0 text-base mt-0.5">{icon}</span>
+        <div>
+          <h3 className="text-sm font-semibold text-foreground">{label}</h3>
+          <p className="text-xs text-muted-foreground mt-0.5">{description}</p>
+        </div>
       </div>
       <MomentumSlider label="" value={value} onChange={onChange} min={0} />
     </div>
