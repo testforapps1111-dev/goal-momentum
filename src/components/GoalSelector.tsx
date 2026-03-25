@@ -28,18 +28,18 @@ export default function GoalSelector({ goals, onSelect, onAdd, onDelete }: GoalS
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-5">
       {/* Add Goal */}
       <motion.div
-        className="glass-card p-8 md:p-10"
+        className="glass-card p-6 md:p-8"
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, delay: 0.1 }}
       >
-        <h2 className="text-lg font-semibold text-foreground mb-1.5">
+        <h2 className="text-lg font-semibold text-foreground mb-1">
           {t('goal.ask')}
         </h2>
-        <p className="text-sm text-muted-foreground mb-6">
+        <p className="text-sm text-muted-foreground mb-5">
           {t('goal.ask.sub')}
         </p>
         <div className="flex gap-3">
@@ -70,15 +70,15 @@ export default function GoalSelector({ goals, onSelect, onAdd, onDelete }: GoalS
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.2 }}
         >
-          <h3 className="text-sm font-semibold text-muted-foreground mb-4 uppercase tracking-wider">
+          <h3 className="text-sm font-semibold text-muted-foreground mb-3 uppercase tracking-wider">
             {t('goal.recent')}
           </h3>
-          <div className="grid gap-3">
+          <div className="grid gap-2.5">
             <AnimatePresence>
               {goals.map((goal, i) => (
                 <motion.div
                   key={goal.id}
-                  className="glass-card p-5 flex items-center gap-4 cursor-pointer group"
+                  className="glass-card p-4 flex items-center gap-4 cursor-pointer group"
                   onClick={() => onSelect(goal)}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -86,8 +86,8 @@ export default function GoalSelector({ goals, onSelect, onAdd, onDelete }: GoalS
                   transition={{ delay: i * 0.04, duration: 0.3 }}
                   whileHover={{ boxShadow: 'var(--shadow-card-hover)' }}
                 >
-                  <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
-                    <Target className="w-5 h-5 text-primary" />
+                  <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+                    <Target className="w-4 h-4 text-primary" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-semibold text-foreground truncate">{goal.name}</p>

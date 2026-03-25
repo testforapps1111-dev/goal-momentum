@@ -117,27 +117,34 @@ export const LANGUAGES = [
 // All translatable UI strings
 const EN_STRINGS: Record<string, string> = {
   'app.title': 'Goal Momentum Tracker',
-  'app.subtitle': 'Set your goals, track your daily growth signals, and build unstoppable momentum.',
+  'app.subtitle': 'Track your daily growth signals and build unstoppable momentum.',
   'ring.label': '7-Day Performance Index',
   'ring.nodata': 'Not enough data yet',
-  'slider.drive': 'Drive',
-  'slider.energy': 'Energy',
-  'slider.focus': 'Focus',
-  'slider.clarity': 'Clarity',
-  'slider.impact': 'Impact Level',
-  'action.label': 'Took a meaningful action today towards your goal?',
+  'slider.drive': 'Motivation',
+  'slider.drive.desc': 'How driven and motivated do you feel today?',
+  'slider.energy': 'Energy Level',
+  'slider.energy.desc': 'How energized and ready to go are you today?',
+  'slider.focus': 'Focus Quality',
+  'slider.focus.desc': 'How sharp and focused is your mind today?',
+  'slider.clarity': 'Mental Clarity',
+  'slider.clarity.desc': 'How clear and organized are your thoughts today?',
+  'slider.impact': 'How much did this move you forward?',
+  'slider.impact.desc': 'Rate the impact of your actions today.',
+  'action.label': 'Did you make progress toward your goal today?',
+  'action.yes': 'Yes, I did',
+  'action.no': 'Not today',
   'action.note.label': 'Action Note',
   'action.note.placeholder': 'What did you do today?',
-  'blocker.label': '🚧 Current Blocker',
+  'blocker.label': "What's slowing your progress?",
   'blocker.placeholder': 'Anything holding you back?',
-  'save.save': 'Save Entry',
+  'save.save': "Log Today's Progress",
   'save.saved': 'Entry Saved ✓',
   'insights.toggle': 'Goal Insights',
   'insights.trend': '7-Day Trend',
-  'insights.drive': 'Drive',
-  'insights.energy': 'Energy',
-  'insights.focus': 'Focus',
-  'insights.clarity': 'Clarity',
+  'insights.drive': 'Motivation',
+  'insights.energy': 'Energy Level',
+  'insights.focus': 'Focus Quality',
+  'insights.clarity': 'Mental Clarity',
   'insights.consistency': 'Action consistency:',
   'insights.days': 'days with meaningful action taken.',
   'insights.multiplier.pre': 'Performance increases',
@@ -145,11 +152,11 @@ const EN_STRINGS: Record<string, string> = {
   'history.title': 'Entry History',
   'history.toggle': 'Show History',
   'history.nodata': 'No entries yet. Start tracking to build your history.',
-  'history.action.yes': 'Action taken',
-  'history.action.no': 'No action',
+  'history.action.yes': 'Progress made',
+  'history.action.no': 'No progress',
   'history.blocker': 'Blocker',
-  'goal.ask': "What's your goal?",
-  'goal.ask.sub': 'Define a goal you want to track — personal, professional, or anything that matters to you.',
+  'goal.ask': "This Month's Goal",
+  'goal.ask.sub': 'Define a goal you want to track – personal, professional, or anything that matters to you.',
   'goal.placeholder': 'e.g. Improve communication skills, Win an award...',
   'goal.add': 'Add Goal',
   'goal.recent': 'Your Goals',
@@ -171,7 +178,6 @@ const TranslationContext = createContext<TranslationContextValue>({
 });
 
 export function TranslationProvider({ children }: { children: React.ReactNode }) {
-  // Read lang from URL params
   const urlParams = new URLSearchParams(window.location.search);
   const urlLang = urlParams.get('lang')?.toLowerCase() || 'en';
   const initialLang = LANGUAGES.find(l => l.code.toLowerCase() === urlLang) ? urlLang : 'en';
@@ -183,7 +189,6 @@ export function TranslationProvider({ children }: { children: React.ReactNode })
 
   const setLang = useCallback((newLang: string) => {
     setLangState(newLang);
-    // Update URL without reload
     const url = new URL(window.location.href);
     if (newLang === 'en') {
       url.searchParams.delete('lang');
@@ -199,7 +204,6 @@ export function TranslationProvider({ children }: { children: React.ReactNode })
       return;
     }
 
-    // Check cache
     if (cacheRef.current[lang]) {
       setTranslations(cacheRef.current[lang]);
       return;
