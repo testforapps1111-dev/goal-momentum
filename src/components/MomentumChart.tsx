@@ -7,7 +7,6 @@ interface MomentumChartProps {
 }
 
 export default function MomentumChart({ data }: MomentumChartProps) {
-  // Build a full 7-day array
   const today = new Date();
   const days: typeof data[number][] = [];
   for (let i = 6; i >= 0; i--) {
@@ -36,7 +35,7 @@ export default function MomentumChart({ data }: MomentumChartProps) {
 
   return (
     <motion.div
-      className="w-full h-60"
+      className="w-full h-56"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5, delay: 0.2 }}
@@ -71,50 +70,10 @@ export default function MomentumChart({ data }: MomentumChartProps) {
               padding: '10px 14px',
             }}
           />
-          <Area
-            type="monotone"
-            dataKey="drive"
-            name="Drive"
-            stroke="hsl(160, 84%, 39%)"
-            strokeWidth={2.5}
-            fill="url(#momentumGrad)"
-            dot={{ r: 3, fill: 'hsl(160, 84%, 39%)' }}
-            activeDot={{ r: 5 }}
-            animationDuration={1000}
-          />
-          <Area
-            type="monotone"
-            dataKey="energy"
-            name="Energy"
-            stroke="hsl(213, 94%, 68%)"
-            strokeWidth={2}
-            fill="none"
-            dot={{ r: 3, fill: 'hsl(213, 94%, 68%)' }}
-            activeDot={{ r: 5 }}
-            animationDuration={1200}
-          />
-          <Area
-            type="monotone"
-            dataKey="focus"
-            name="Focus"
-            stroke="hsl(280, 67%, 65%)"
-            strokeWidth={2}
-            fill="none"
-            dot={{ r: 3, fill: 'hsl(280, 67%, 65%)' }}
-            activeDot={{ r: 5 }}
-            animationDuration={1400}
-          />
-          <Area
-            type="monotone"
-            dataKey="clarity"
-            name="Clarity"
-            stroke="hsl(35, 92%, 60%)"
-            strokeWidth={2}
-            fill="none"
-            dot={{ r: 3, fill: 'hsl(35, 92%, 60%)' }}
-            activeDot={{ r: 5 }}
-            animationDuration={1600}
-          />
+          <Area type="monotone" dataKey="drive" name="Motivation" stroke="hsl(160, 84%, 39%)" strokeWidth={2.5} fill="url(#momentumGrad)" dot={{ r: 3, fill: 'hsl(160, 84%, 39%)' }} activeDot={{ r: 5 }} animationDuration={1000} />
+          <Area type="monotone" dataKey="energy" name="Energy Level" stroke="hsl(213, 94%, 68%)" strokeWidth={2} fill="none" dot={{ r: 3, fill: 'hsl(213, 94%, 68%)' }} activeDot={{ r: 5 }} animationDuration={1200} />
+          <Area type="monotone" dataKey="focus" name="Focus Quality" stroke="hsl(280, 67%, 65%)" strokeWidth={2} fill="none" dot={{ r: 3, fill: 'hsl(280, 67%, 65%)' }} activeDot={{ r: 5 }} animationDuration={1400} />
+          <Area type="monotone" dataKey="clarity" name="Mental Clarity" stroke="hsl(35, 92%, 60%)" strokeWidth={2} fill="none" dot={{ r: 3, fill: 'hsl(35, 92%, 60%)' }} activeDot={{ r: 5 }} animationDuration={1600} />
         </AreaChart>
       </ResponsiveContainer>
     </motion.div>

@@ -18,20 +18,20 @@ export default function Index() {
   const [selectedGoal, setSelectedGoal] = useState<Goal | null>(null);
 
   return (
-    <div className="min-h-screen py-10 px-4 md:px-8">
-      <div className="max-w-4xl mx-auto space-y-10">
-        {/* Header */}
+    <div className="min-h-screen py-8 px-4 md:px-8">
+      <div className="max-w-3xl mx-auto space-y-6">
+        {/* Header Card - separate box like reference */}
         <motion.div
-          className="relative"
+          className="glass-card p-6 md:p-8 relative insight-border-gradient"
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
         >
-          <div className="absolute right-0 top-0">
+          <div className="absolute right-4 top-4 md:right-6 md:top-5">
             <LanguageSwitcher />
           </div>
-          <div className="text-center space-y-2 pt-1">
-            <h1 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight">
+          <div className="text-center space-y-1.5">
+            <h1 className="text-xl md:text-2xl font-bold text-foreground tracking-tight">
               {selectedGoal ? selectedGoal.name : <TranslatedTitle />}
             </h1>
             {!selectedGoal && (
@@ -117,7 +117,7 @@ function GoalTracker({ goal, store, setStore, onBack }: {
 
   return (
     <motion.div
-      className="space-y-6"
+      className="space-y-4"
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: -20 }}
@@ -142,65 +142,102 @@ function GoalTracker({ goal, store, setStore, onBack }: {
         <ProgressRing value={avg7Day} label={t('ring.label')} hasData={hasData} noDataText={t('ring.nodata')} />
       </motion.div>
 
-      {/* Main Form */}
+      {/* Main Form Card */}
       <motion.div
         key={resetKey}
-        className={`glass-card p-8 md:p-12 transition-all duration-300 ${glowCard ? 'glass-card-glow' : ''}`}
+        className={`glass-card p-6 md:p-10 insight-border-gradient transition-all duration-300 ${glowCard ? 'glass-card-glow' : ''}`}
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, delay: 0.2 }}
       >
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16">
-          {/* Left: Sliders */}
-          <div className="space-y-10">
-            <MomentumSlider label={t('slider.drive')} icon="🔥" value={todayEntry.drive} onChange={v => updateToday({ drive: v })} min={0} />
-            <MomentumSlider label={t('slider.energy')} icon="⚡" value={todayEntry.energy} onChange={v => updateToday({ energy: v })} min={0} />
-            <MomentumSlider label={t('slider.focus')} icon="🎯" value={todayEntry.focus} onChange={v => updateToday({ focus: v })} min={0} />
-            <MomentumSlider label={t('slider.clarity')} icon="💎" value={todayEntry.clarity} onChange={v => updateToday({ clarity: v })} min={0} />
+        {/* Sliders - each with heading + description like reference */}
+        <div className="space-y-8">
+          <SliderField
+            label={t('slider.drive')}
+            description={t('slider.drive.desc')}
+            icon="🔥"
+            value={todayEntry.drive}
+            onChange={v => updateToday({ drive: v })}
+          />
+          <SliderField
+            label={t('slider.energy')}
+            description={t('slider.energy.desc')}
+            icon="⚡"
+            value={todayEntry.energy}
+            onChange={v => updateToday({ energy: v })}
+          />
+          <SliderField
+            label={t('slider.focus')}
+            description={t('slider.focus.desc')}
+            icon="🎯"
+            value={todayEntry.focus}
+            onChange={v => updateToday({ focus: v })}
+          />
+          <SliderField
+            label={t('slider.clarity')}
+            description={t('slider.clarity.desc')}
+            icon="💎"
+            value={todayEntry.clarity}
+            onChange={v => updateToday({ clarity: v })}
+          />
+        </div>
+
+        {/* Divider */}
+        <div className="border-t border-border my-8" />
+
+        {/* Action Toggle - styled like reference with two buttons */}
+        <div className="space-y-6">
+          <div>
+            <h3 className="text-sm font-semibold text-foreground mb-1">{t('action.label')}</h3>
           </div>
+          <ActionToggle
+            label=""
+            value={todayEntry.tookAction}
+            onChange={v => updateToday({ tookAction: v })}
+            yesLabel={t('action.yes')}
+            noLabel={t('action.no')}
+          />
 
-          {/* Right: Action & Blocker */}
-          <div className="space-y-10">
-            <ActionToggle
-              label={t('action.label')}
-              value={todayEntry.tookAction}
-              onChange={v => updateToday({ tookAction: v })}
+          <AnimatePresence>
+            {todayEntry.tookAction && (
+              <motion.div
+                className="space-y-6"
+                initial={{ opacity: 0, y: 10, height: 0 }}
+                animate={{ opacity: 1, y: 0, height: 'auto' }}
+                exit={{ opacity: 0, y: 10, height: 0 }}
+                transition={{ duration: 0.28, ease: 'easeOut' }}
+              >
+                <SliderField
+                  label={t('slider.impact')}
+                  description={t('slider.impact.desc')}
+                  icon="📈"
+                  value={todayEntry.impactLevel}
+                  onChange={v => updateToday({ impactLevel: v })}
+                />
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-foreground">{t('action.note.label')}</label>
+                  <textarea
+                    className="w-full rounded-xl border border-input bg-card p-3.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/30 resize-none transition-shadow duration-200"
+                    rows={2}
+                    placeholder={t('action.note.placeholder')}
+                    value={todayEntry.actionNote}
+                    onChange={e => updateToday({ actionNote: e.target.value })}
+                  />
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Blocker */}
+          <div className="space-y-2">
+            <label className="text-sm font-semibold text-foreground">{t('blocker.label')}</label>
+            <textarea
+              className="w-full rounded-xl border border-input bg-card p-3.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/30 resize-none transition-shadow duration-200"
+              rows={2}
+              placeholder={t('blocker.placeholder')}
+              value={todayEntry.blocker}
+              onChange={e => updateToday({ blocker: e.target.value })}
             />
-
-            <AnimatePresence>
-              {todayEntry.tookAction && (
-                <motion.div
-                  className="space-y-8"
-                  initial={{ opacity: 0, y: 10, height: 0 }}
-                  animate={{ opacity: 1, y: 0, height: 'auto' }}
-                  exit={{ opacity: 0, y: 10, height: 0 }}
-                  transition={{ duration: 0.28, ease: 'easeOut' }}
-                >
-                  <MomentumSlider label={t('slider.impact')} icon="📈" value={todayEntry.impactLevel} onChange={v => updateToday({ impactLevel: v })} min={0} />
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-foreground">{t('action.note.label')}</label>
-                    <textarea
-                      className="w-full rounded-xl border border-input bg-card p-3.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/30 resize-none transition-shadow duration-200"
-                      rows={2}
-                      placeholder={t('action.note.placeholder')}
-                      value={todayEntry.actionNote}
-                      onChange={e => updateToday({ actionNote: e.target.value })}
-                    />
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-foreground">{t('blocker.label')}</label>
-              <textarea
-                className="w-full rounded-xl border border-input bg-card p-3.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/30 resize-none transition-shadow duration-200"
-                rows={2}
-                placeholder={t('blocker.placeholder')}
-                value={todayEntry.blocker}
-                onChange={e => updateToday({ blocker: e.target.value })}
-              />
-            </div>
           </div>
         </div>
 
@@ -210,18 +247,18 @@ function GoalTracker({ goal, store, setStore, onBack }: {
         </div>
       </motion.div>
 
-      {/* Insights & History side by side */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+      {/* Insights & History toggles side by side */}
+      <div className="grid grid-cols-2 gap-3">
         <motion.button
           type="button"
-          className="glass-card w-full p-5 flex items-center justify-between cursor-pointer"
+          className="glass-card w-full p-4 flex items-center justify-between cursor-pointer"
           onClick={() => setShowInsights(!showInsights)}
           whileHover={{ boxShadow: 'var(--shadow-card-hover)' }}
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.35 }}
         >
-          <span className="flex items-center gap-2.5 text-sm font-semibold text-foreground">
+          <span className="flex items-center gap-2 text-sm font-semibold text-foreground">
             <BarChart3 className="w-4 h-4 text-primary" />
             {t('insights.toggle')}
           </span>
@@ -232,14 +269,14 @@ function GoalTracker({ goal, store, setStore, onBack }: {
 
         <motion.button
           type="button"
-          className="glass-card w-full p-5 flex items-center justify-between cursor-pointer"
+          className="glass-card w-full p-4 flex items-center justify-between cursor-pointer"
           onClick={() => setShowHistory(!showHistory)}
           whileHover={{ boxShadow: 'var(--shadow-card-hover)' }}
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.4 }}
         >
-          <span className="flex items-center gap-2.5 text-sm font-semibold text-foreground">
+          <span className="flex items-center gap-2 text-sm font-semibold text-foreground">
             <History className="w-4 h-4 text-primary" />
             {t('history.toggle')}
           </span>
@@ -259,10 +296,10 @@ function GoalTracker({ goal, store, setStore, onBack }: {
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.35, ease: 'easeOut' }}
           >
-            <div className="glass-card p-8">
-              <h3 className="text-sm font-semibold text-foreground mb-6">{t('insights.trend')}</h3>
+            <div className="glass-card p-6 md:p-8">
+              <h3 className="text-sm font-semibold text-foreground mb-5">{t('insights.trend')}</h3>
               <MomentumChart data={last7Days} />
-              <div className="flex flex-wrap gap-x-6 gap-y-2 mt-5 text-xs text-muted-foreground">
+              <div className="flex flex-wrap gap-x-5 gap-y-2 mt-4 text-xs text-muted-foreground">
                 <span className="flex items-center gap-1.5">
                   <span className="w-3 h-0.5 rounded bg-primary inline-block" /> {t('insights.drive')}
                 </span>
@@ -279,7 +316,7 @@ function GoalTracker({ goal, store, setStore, onBack }: {
 
               {hasData && (
                 <motion.div
-                  className="mt-8 pt-6 border-t border-border space-y-3"
+                  className="mt-6 pt-5 border-t border-border space-y-2"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.3 }}
@@ -310,13 +347,34 @@ function GoalTracker({ goal, store, setStore, onBack }: {
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.35, ease: 'easeOut' }}
           >
-            <div className="glass-card p-8">
-              <h3 className="text-sm font-semibold text-foreground mb-6">{t('history.title')}</h3>
+            <div className="glass-card p-6 md:p-8">
+              <h3 className="text-sm font-semibold text-foreground mb-5">{t('history.title')}</h3>
               <HistoryPanel entries={entries} />
             </div>
           </motion.div>
         )}
       </AnimatePresence>
     </motion.div>
+  );
+}
+
+/** Slider field with heading + description like the reference UI */
+function SliderField({ label, description, icon, value, onChange }: {
+  label: string;
+  description: string;
+  icon: string;
+  value: number;
+  onChange: (v: number) => void;
+}) {
+  return (
+    <div className="space-y-3">
+      <div>
+        <h3 className="text-sm font-semibold text-foreground flex items-center gap-1.5">
+          <span>{icon}</span> {label}
+        </h3>
+        <p className="text-xs text-muted-foreground mt-0.5">{description}</p>
+      </div>
+      <MomentumSlider label="" value={value} onChange={onChange} min={0} />
+    </div>
   );
 }

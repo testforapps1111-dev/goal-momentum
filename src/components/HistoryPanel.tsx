@@ -13,14 +13,14 @@ export default function HistoryPanel({ entries }: HistoryPanelProps) {
 
   if (sorted.length === 0) {
     return (
-      <div className="text-center py-10 text-muted-foreground text-sm">
+      <div className="text-center py-8 text-muted-foreground text-sm">
         {t('history.nodata')}
       </div>
     );
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       {sorted.map((entry, i) => {
         const dateStr = new Date(entry.date).toLocaleDateString('en-US', {
           weekday: 'long', year: 'numeric', month: 'short', day: 'numeric',
@@ -30,7 +30,7 @@ export default function HistoryPanel({ entries }: HistoryPanelProps) {
         return (
           <motion.div
             key={entry.date}
-            className="glass-card p-5 space-y-3"
+            className="glass-card p-4 space-y-3"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.05, duration: 0.3 }}
@@ -42,8 +42,8 @@ export default function HistoryPanel({ entries }: HistoryPanelProps) {
               </span>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-              <Metric label="🔥 Drive" value={entry.drive} />
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+              <Metric label="🔥 Motivation" value={entry.drive} />
               <Metric label="⚡ Energy" value={entry.energy} />
               <Metric label="🎯 Focus" value={entry.focus} />
               <Metric label="💎 Clarity" value={entry.clarity} />

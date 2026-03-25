@@ -10,7 +10,7 @@ interface MomentumSliderProps {
   icon?: string;
 }
 
-export default function MomentumSlider({ label, value, onChange, min = 1, max = 10, icon }: MomentumSliderProps) {
+export default function MomentumSlider({ label, value, onChange, min = 0, max = 10, icon }: MomentumSliderProps) {
   const trackRef = useRef<HTMLDivElement>(null);
   const [dragging, setDragging] = useState(false);
 
@@ -42,51 +42,60 @@ export default function MomentumSlider({ label, value, onChange, min = 1, max = 
   }, []);
 
   return (
-    <div className="space-y-3.5">
-      <div className="flex items-center justify-between">
-        <span className="text-sm font-medium text-foreground">
-          {icon && <span className="mr-1.5">{icon}</span>}
-          {label}
-        </span>
-        <motion.span
-          className="text-lg font-bold text-primary tabular-nums"
+    <div className="space-y-2">
+      {label && (
+        <div className="flex items-center justify-between">
+          <span className="text-sm font-medium text-foreground">
+            {icon && <span className="mr-1.5">{icon}</span>}
+            {label}
+          </span>
+        </div>
+      )}
+      <div className="flex items-center gap-4">
+        <div
+          ref={trackRef}
+          className="slider-track relative cursor-pointer select-none touch-none h-[10px] flex-1"
+          onPointerDown={handlePointerDown}
+          onPointerMove={handlePointerMove}
+          onPointerUp={handlePointerUp}
+        >
+          <div className="slider-fill" style={{ width: `${pct}%` }} />
+          <AnimatePresence>
+            {dragging && (
+              <motion.div
+                className="absolute rounded-full"
+                style={{
+                  left: `${pct}%`,
+                  top: '50%',
+                  transform: 'translate(-50%, -50%)',
+                  width: 40,
+                  height: 40,
+                  background: 'hsla(160, 84%, 39%, 0.12)',
+                }}
+                initial={{ scale: 0, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0, opacity: 0 }}
+                transition={{ duration: 0.2 }}
+              />
+            )}
+          </AnimatePresence>
+          <div
+            className="slider-thumb absolute top-1/2 -translate-y-1/2"
+            style={{ left: `${pct}%`, transform: `translate(-50%, -50%)` }}
+          />
+        </div>
+        {/* Value badge */}
+        <motion.div
+          className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0"
           animate={{ scale: dragging ? 1.1 : 1 }}
           transition={{ type: 'spring', stiffness: 400, damping: 20 }}
         >
-          {value}
-        </motion.span>
+          <span className="text-sm font-bold text-primary tabular-nums">{value}</span>
+        </motion.div>
       </div>
-      <div
-        ref={trackRef}
-        className="slider-track relative cursor-pointer select-none touch-none h-[10px]"
-        onPointerDown={handlePointerDown}
-        onPointerMove={handlePointerMove}
-        onPointerUp={handlePointerUp}
-      >
-        <div className="slider-fill" style={{ width: `${pct}%` }} />
-        <AnimatePresence>
-          {dragging && (
-            <motion.div
-              className="absolute rounded-full"
-              style={{
-                left: `${pct}%`,
-                top: '50%',
-                transform: 'translate(-50%, -50%)',
-                width: 40,
-                height: 40,
-                background: 'hsla(160, 84%, 39%, 0.12)',
-              }}
-              initial={{ scale: 0, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0, opacity: 0 }}
-              transition={{ duration: 0.2 }}
-            />
-          )}
-        </AnimatePresence>
-        <div
-          className="slider-thumb absolute top-1/2 -translate-y-1/2"
-          style={{ left: `${pct}%`, transform: `translate(-50%, -50%)` }}
-        />
+      <div className="flex justify-between text-[10px] text-muted-foreground px-0.5">
+        <span>Low</span>
+        <span>High</span>
       </div>
     </div>
   );
