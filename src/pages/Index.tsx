@@ -17,12 +17,24 @@ export default function Index() {
   const { store, setStore, addGoal, deleteGoal } = useGoalStore();
   const [selectedGoal, setSelectedGoal] = useState<Goal | null>(null);
 
+  if (store.loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <motion.div
+          className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full"
+          animate={{ rotate: 360 }}
+          transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+        />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen py-8 px-4 md:px-8">
       <div className="max-w-3xl mx-auto space-y-6">
         {/* Header Card - separate box like reference */}
         <motion.div
-          className="glass-card p-6 md:p-8 relative insight-border-gradient"
+          className="glass-card p-6 md:p-8 relative insight-border-gradient z-50"
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
@@ -112,7 +124,7 @@ function GoalTracker({ goal, store, setStore, onBack }: {
     setGlowCard(true);
     setTimeout(() => {
       setGlowCard(false);
-      const defaults = defaultEntry(todayKey);
+      const defaults = defaultEntry(goal.id, todayKey);
       updateToday(defaults);
       setResetKey(k => k + 1);
     }, 2200);
